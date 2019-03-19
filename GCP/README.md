@@ -1,32 +1,59 @@
 # Oberservable Kuberentes demo using Beats and APM in GCP
 
-We are going to deploy the Python demo application with MySQL backend and Nginx frontend monitored by Filebeat, Metricbeat, Packetbeat and APM into GKE in GCP. Elasticsearch and Kibana are hosted in Elastic Cloud. We assume that you already have your Elastic Cloud cluster setup and ready to go. If not, please refer to Elastic's instructions on how to create an account and setting up your cluster.
+We are going to deploy a Python demo application with MySQL backend and Nginx frontend monitored by Filebeat, Metricbeat, Packetbeat and APM into GKE in GCP. Elasticsearch and Kibana are hosted in Elastic Cloud.
 
-1. Create a Kubernetes cluster in GCP using your GCP account. See screenshots below:
+### Create an Elastic Cloud deployment
+We will use Elastic Cloud ( http://cloud.elastic.co ) . Don't worry, you do not need a credit card.
 
-Go to the "Kuberentes Engine" page, click on "CREATE CLUSTER":
+1. Go to https://www.elastic.co/cloud/elasticsearch-service/signup
+2. Click on Start Free Trial
 
-![Kubernetes Cluster](images/k8s-1.png "Kubernetes Cluster")
+![elastic cloud](images/k8s-13.png "elastic cloud")
 
-Give your cluster a name. Configure your "Machine Type" as "4vCPUs, 8GB of memory". You will have to use the customize option to be able to do this. 2vCPUs also works but does not perform well. Change the cluster size to "1" to reduce cost. Click on "Create". Your 1-node cluster should be ready in a few minutes.
 
-![Kubernetes Cluster](images/k8s-2.png "Kubernetes Cluster")
+3. Check your email and click on the link in the email
+4. Set your password when prompted. 
 
-2. Install Googl Cloud SDK by following this documentation: https://cloud.google.com/sdk/install
+### Get Started with GKE
 
-3. Install kubectl by following this documentation: https://kubernetes.io/docs/tasks/tools/install-kubectl/
+1. Create a K8s cluster on GCP Kubernetes Engine.  Ensure to provide a name and select a zone.  Take the default for the rest.
 
-4. Setup your local environment using the following command. Make sure everything matches your cluster. "aquan" is the name of my Kubernetes cluster. "adam.quan@elastic.co" is my GCP account ID.
+![elastic cloud](images/k8s-14.png "elastic cloud")
+
+2. [Install Google Cloud SDK](https://cloud.google.com/sdk/install)
+3. [Install and setup kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+4. Setup your local environment
 
 ```
-gcloud config set project elastic-sa
-gcloud config set compute/zone us-central1-a
-gcloud config set container/cluster aquan
+gcloud config set project <PROJECT_NAME>
+gcloud config set compute/zone <DEFAULT_ZONE>
+gcloud config set container/cluster <CLUSTER_NAME>
 gcloud auth login
-gcloud container clusters get-credentials aquan --zone us-central1-a --project elastic-sa
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=adam.quan@elastic.co
-kubectl create clusterrolebinding adam.quan-cluster-admin-binding --clusterrole=cluster-admin --user=adam.quan@elastic.co
 ```
+To verify if the values are set properly, `gcloud config get-value <PROPERTY_NAME>`
+
+5. Update credentials and endpoint information to point kubectl at a specific cluster in Google Kubernetes Engine
+
+```gcloud container clusters get-credentials <CLUSTER_NAME> --zone <DEFAULT_ZONE> --project <PROJECT_NAME>```
+
+By default, the credentials are written to `HOME/.kube/config`  For details, please see (https://cloud.google.com/sdk/gcloud/reference/container/clusters/get-credentials)
+
+6. Create a cluster level role binding so you can edit system level namespace.
+
+```kubectl create clusterrolebinding cluster-admin-binding  --clusterrole=cluster-admin --user=<USER_NAME>```
+
+Usually, <USER_NAME> is the email address of the user.
+
+7. To workaround [this issue](https://coreos.com/operators/prometheus/docs/latest/troubleshooting.html)
+
+```
+kubectl create clusterrolebinding sherry.ger-cluster-admin-binding --clusterrole=cluster-admin --user=sherry.ger@elastic.co 
+```
+
+If you are successful, you should see the following output
+
+```clusterrolebinding.rbac.authorization.k8s.io "sherry.ger-cluster-admin-binding" created```
+
 
 5. Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to use the '-n' option during encoding.
 
