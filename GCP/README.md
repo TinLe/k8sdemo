@@ -3,7 +3,8 @@
 We are going to deploy a Python demo application with MySQL backend and Nginx frontend monitored by Filebeat, Metricbeat, Packetbeat and APM into GKE in GCP. Elasticsearch and Kibana are hosted in Elastic Cloud.
 
 ### Create an Elastic Cloud deployment
-We will use Elastic Cloud ( http://cloud.elastic.co ) . Don't worry, you do not need a credit card.
+
+We will use [Elastic Cloud](http://cloud.elastic.co). Don't worry, you do not need a credit card.
 
 1. Go to https://www.elastic.co/cloud/elasticsearch-service/signup
 2. Click on Start Free Trial
@@ -12,7 +13,19 @@ We will use Elastic Cloud ( http://cloud.elastic.co ) . Don't worry, you do not 
 
 
 3. Check your email and click on the link in the email
-4. Set your password when prompted. 
+4. Set your password when prompted
+5. Login to Elastic Cloud console (https://cloud.elastic.co)
+6. Click on the Create deployment button
+7. Add a name to your cluster and select a cloud platform, a region, and a deployment template for your cluster 
+
+![elastic cloud deploy](images/k8s-15.png "elastic cloud deploy")
+
+
+
+8. Customize your deployment. As of March 2019, you can deploy a cluster upto across 2 zones with 8GB of RAM per zone for a trial.
+
+![elastic cloud customize](images/k8s-16.png "elastic cloud customize")
+
 
 ### Get Started with GKE
 
@@ -54,30 +67,35 @@ If you are successful, you should see the following output
 
 ```clusterrolebinding.rbac.authorization.k8s.io "sherry.ger-cluster-admin-binding" created```
 
+### Set your secrets
 
-5. Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to use the '-n' option during encoding.
+Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to use the '-n' option during encoding.
 
 ```
 echo -n 'STRING-TO-ENCODE' | base64
 ```
 
-6. Deploy everyting using the following command. Wait a few minutes for all the deployments to be done.
+### Ready, Set, Go 
+
+We are ready to deploy. 
 
 ```
 kubectl apply -f .
 ```
 
-7. Go to "Workloads" from your GKE console, you should see the list of deployments. You can get ride of the system filter to see all deployments.
+If you would like to validate all the YAML files, you can run the following command:
 
-![Kubernetes Cluster](images/k8s-3.png "Kubernetes Cluster")
+```
+kubectl apply --validate=true --dry-run=true -f .
+```
 
-This is a list of all of my deployments without the system filter. Make sure you see everthing is up running and healthy.
+Verify we are up and running, go to Workloads under Kubernete Engine in your GCP console and add `Cluster:<YOUR_CLUSTER_NAME>` to the filter bar.
 
-![Kubernetes Cluster](images/k8s-4.png "Kubernetes Cluster")
+![gcp workloads](images/k8s-18.png "gcp workloads")
 
-8. Go to "Services", and click on the icon next to the IP of the nginx service, the application web page should be open.
+Go to "Services" and add `Cluster:<YOUR_CLUSTER_NAME>` to the filter bar.  Click on the icon next to the IP of the nginx service, the application web page should open.
 
-![Kubernetes Cluster](images/k8s-5.png "Kubernetes Cluster")
+![gcp services](images/k8s-19.png "gcp services")
 
 Here is how the application look like. You can click on "add a new question" link to add a new question, which will be saved into the mysql database.
 
@@ -87,7 +105,17 @@ Fill in a question and your name and click on submit. This will generate some tr
 
 ![Kubernetes Cluster](images/k8s-7.png "Kubernetes Cluster")
 
-9. Go to your Elastic Cloud Kibana console. Open the "Metricbeat Kuberenetes" dashboard. You should see something like this.
+### Explore
+
+Go to your Elastic Cloud Kibana console and go to Infrastructure.
+
+![infra ui](images/k8s-20.png "infra ui")
+
+Select a host to drill down to pods on the host.  Click on one of the pods, right click to bring up the menu, select View logs.
+
+![log ui](images/k8s-22.png "log ui")
+
+Open the "Metricbeat Kuberenetes" dashboard. You should see something like this.
 
 ![Kubernetes Cluster](images/k8s-8.png "Kubernetes Cluster")
 
@@ -102,12 +130,3 @@ Here is the "Filebeat MySQL" dashboard.
 Here is the "APM Transaction" dashboard.
 
 ![Kubernetes Cluster](images/k8s-11.png "Kubernetes Cluster")
-
-Keep in mind that we do not have APM in the cloud yet. So, you do not see the APM UI from Kibana. However, if you are sending all these data to a local 6.3 cluster, you will have the APM UI.
-
-10. Finally, go to "Discover" and select the "apm-*" index pattern. Notice that some of the entries are tagged with Kubernetes metadata? This is extremly powerful for correlating APM data with Kubernetes infrastructure. Right now, we are achieving this by deploying the APM server as a DamonSet inside Kuberentes. In the future, we will be adding "native" ways to add these metadata.
-
-![Kubernetes Cluster](images/k8s-12.png "Kubernetes Cluster")
-
-
-
