@@ -26,6 +26,11 @@ We will use [Elastic Cloud](http://cloud.elastic.co). Don't worry, you do not ne
 
 ![elastic cloud customize](images/k8s-16.png "elastic cloud customize")
 
+9. Click on the Create deployment button
+10. Please note down the password for the `elastic` user.  
+
+![elastic cloud password](images/k8s-17.png "elastic cloud password")
+
 
 ### Get Started with GKE
 
@@ -43,9 +48,10 @@ gcloud config set compute/zone <DEFAULT_ZONE>
 gcloud config set container/cluster <CLUSTER_NAME>
 gcloud auth login
 ```
+
 To verify if the values are set properly, `gcloud config get-value <PROPERTY_NAME>`
 
-5. Update credentials and endpoint information to point kubectl at a specific cluster in Google Kubernetes Engine
+5. Update credentials and endpoint information to point `kubectl` at a specific cluster in Google Kubernetes Engine
 
 ```gcloud container clusters get-credentials <CLUSTER_NAME> --zone <DEFAULT_ZONE> --project <PROJECT_NAME>```
 
@@ -57,7 +63,7 @@ By default, the credentials are written to `HOME/.kube/config`  For details, ple
 
 Usually, <USER_NAME> is the email address of the user.
 
-7. To workaround [this issue](https://coreos.com/operators/prometheus/docs/latest/troubleshooting.html)
+7. To workaround [this issue](https://coreos.com/operators/prometheus/docs/latest/troubleshooting.html), use the following command
 
 ```
 kubectl create clusterrolebinding sherry.ger-cluster-admin-binding --clusterrole=cluster-admin --user=sherry.ger@elastic.co 
@@ -89,7 +95,7 @@ If you would like to validate all the YAML files, you can run the following comm
 kubectl apply --validate=true --dry-run=true -f .
 ```
 
-Verify we are up and running, go to Workloads under Kubernete Engine in your GCP console and add `Cluster:<YOUR_CLUSTER_NAME>` to the filter bar.
+To verify we are up and running, go to Workloads under Kubernetes Engine in your GCP console and add `Cluster:<YOUR_CLUSTER_NAME>` to the filter bar.
 
 ![gcp workloads](images/k8s-18.png "gcp workloads")
 
@@ -105,13 +111,15 @@ Fill in a question and your name and click on submit. This will generate some tr
 
 ![Kubernetes Cluster](images/k8s-7.png "Kubernetes Cluster")
 
+Alternatively, you can just run `./load.sh` to create artificial load to the app.
+
 ### Explore
 
 Go to your Elastic Cloud Kibana console and go to Infrastructure.
 
 ![infra ui](images/k8s-20.png "infra ui")
 
-Select a host to drill down to pods on the host.  Click on one of the pods, right click to bring up the menu, select View logs.
+Select a host to drill down to pods on the host.  Click on one of the pods, right click to bring up the menu, and select View logs.
 
 ![log ui](images/k8s-22.png "log ui")
 
