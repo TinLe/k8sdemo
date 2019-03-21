@@ -22,7 +22,7 @@ We will use [Elastic Cloud](http://cloud.elastic.co). Don't worry, you do not ne
 
 
 
-8. Customize your deployment. As of March 2019, you can deploy a cluster upto across 2 zones with 8GB of RAM per zone for a trial.
+8. Customize your deployment. As of March 2019, you can deploy a cluster across 2 zones with 8GB of RAM per zone for a trial.
 
 ![elastic cloud customize](images/k8s-16.png "elastic cloud customize")
 
