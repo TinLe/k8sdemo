@@ -75,7 +75,7 @@ If you are successful, you should see the following output
 
 ### Set your secrets
 
-Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to use the '-n' option during encoding.
+Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to encode each setting in the secret file with the '-n' option during encoding.
 
 ```
 echo -n 'STRING-TO-ENCODE' | base64
