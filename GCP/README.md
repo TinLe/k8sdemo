@@ -73,6 +73,15 @@ If you are successful, you should see the following output
 
 ```clusterrolebinding.rbac.authorization.k8s.io "sherry.ger-cluster-admin-binding" created```
 
+### Clone the YAMLs
+
+Clone the sample repo
+
+```
+git clone https://github.com/sherry-ger/k8sdemo.git
+cd k8sdemo/gcp
+```
+
 ### Set your secrets
 
 Change the secretes in the secretes.yaml file to point to your Elastic Cloud Elasticsearch cluster. Make sure you change the host name of the Elasticsearch host and Kibana host to point to your own Elastic Cloud instance. Remember to encode each setting in the secret file with the '-n' option during encoding.
