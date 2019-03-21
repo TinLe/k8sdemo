@@ -98,7 +98,7 @@ We are ready to deploy.
 kubectl apply -f .
 ```
 
-If you would like to validate all the YAML files, you can run the following command:
+If you would like to validate all the YAML files before deploying, you can run the following command:
 
 ```
 kubectl apply --validate=true --dry-run=true -f .
@@ -116,7 +116,7 @@ Here is how the application look like. You can click on "add a new question" lin
 
 ![Kubernetes Cluster](images/k8s-6.png "Kubernetes Cluster")
 
-Fill in a question and your name and click on submit. This will generate some traffic. Feel free to add more questions and click around.
+Fill in a question plus your name and click on submit. This will generate some traffic. Feel free to add more questions and click around.
 
 ![Kubernetes Cluster](images/k8s-7.png "Kubernetes Cluster")
 
